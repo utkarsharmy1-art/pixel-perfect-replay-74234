@@ -38,7 +38,7 @@ function Shop() {
   const s = SORTS[sort];
   const { data, isLoading } = useQuery({
     queryKey: ["products", q, sort],
-    queryFn: () => fetchProducts({ first: 48, query: q, sortKey: s["sort"]Key, reverse: s.reverse }),
+    queryFn: () => fetchProducts({ first: 48, query: q, sortKey: s.sortKey, reverse: s.reverse }),
   });
 
   return (
