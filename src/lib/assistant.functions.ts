@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { generateChatCompletion, GatewayError } from "@lovable.dev/ai-gateway";
+import { generateResponse, GatewayError } from "@lovable.dev/ai-gateway";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
 
 export type AssistantProduct = {
@@ -69,22 +69,21 @@ async function searchProducts(args: { keywords?: string; max_price?: number; min
 const TOOLS = [
   {
     type: "function" as const,
-    function: {
-      name: "search_products",
-      description: "Search the real Saffan Collection catalogue. Translate Hindi/Hinglish needs into English keywords (e.g. 'shaadi' -> 'wedding party wear', 'sooti' -> 'cotton').",
-      parameters: {
-        type: "object",
-        properties: {
-          keywords: { type: "string", description: "English keywords such as fabric, style, occasion: 'cotton', 'anarkali', 'party wear'. Omit to browse all." },
-          max_price: { type: "number", description: "Budget upper limit in INR" },
-          min_price: { type: "number" },
-          colour: { type: "string" },
-          size: { type: "string" },
-          on_sale: { type: "boolean", description: "Only discounted items" },
-          newest: { type: "boolean", description: "Latest arrivals first" },
-        },
-        additionalProperties: false,
+    name: "search_products",
+    strict: false,
+    description: "Search the real Saffan Collection catalogue. Translate Hindi/Hinglish needs into English keywords (e.g. 'shaadi' -> 'party wear', 'sooti' -> 'cotton').",
+    parameters: {
+      type: "object",
+      properties: {
+        keywords: { type: "string", description: "English keywords such as fabric, style, occasion: 'cotton', 'anarkali', 'party wear'. Omit to browse all." },
+        max_price: { type: "number", description: "Budget upper limit in INR" },
+        min_price: { type: "number" },
+        colour: { type: "string" },
+        size: { type: "string" },
+        on_sale: { type: "boolean", description: "Only discounted items" },
+        newest: { type: "boolean", description: "Latest arrivals first" },
       },
+      additionalProperties: false,
     },
   },
 ];
@@ -93,27 +92,33 @@ export const askAssistant = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ messages: z.array(MsgSchema).min(1).max(40) }).parse(input))
   .handler(async ({ data }) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const messages: any[] = [{ role: "system", content: SYSTEM }, ...data.messages];
+    const input: any[] = data.messages.map((m) => ({ role: m.role, content: m.content }));
     const found = new Map<string, AssistantProduct>();
     try {
       for (let step = 0; step < 4; step++) {
-        const res = await generateChatCompletion({ model: "openai/gpt-6-astra", messages, tools: TOOLS });
-        const msg = res.choices[0]?.message;
-        if (!msg) break;
-        const calls = msg.tool_calls ?? [];
-        if (calls.length === 0) return { reply: msg.content ?? "", products: [...found.values()] };
-        messages.push(msg);
+        const res = await generateResponse({ model: "openai/gpt-6-astra", instructions: SYSTEM, input, tools: TOOLS });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const output = (res.output ?? []) as any[];
+        const calls = output.filter((o) => o.type === "function_call");
+        if (calls.length === 0) {
+          const text = output
+            .filter((o) => o.type === "message")
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .flatMap((o) => (o.content ?? []).filter((c: any) => c.type === "output_text").map((c: any) => c.text))
+            .join("\n");
+          return { reply: text, products: [...found.values()] };
+        }
+        input.push(...output);
         for (const c of calls) {
-          if (c.type !== "function") continue;
           let result: unknown;
           try {
-            const items = await searchProducts(JSON.parse(c.function.arguments || "{}"));
+            const items = await searchProducts(JSON.parse(c.arguments || "{}"));
             items.forEach((p) => found.set(p.handle, p));
             result = items.length ? items : { note: "No products in the catalogue match. The store may not have stock listed yet." };
           } catch {
             result = { error: "Catalogue unavailable right now." };
           }
-          messages.push({ role: "tool", tool_call_id: c.id, content: JSON.stringify(result) });
+          input.push({ type: "function_call_output", call_id: c.call_id, output: JSON.stringify(result) });
         }
       }
       return { reply: "Let me know a little more about what you're looking for.", products: [...found.values()] };
