@@ -31,7 +31,7 @@ function ProductPage() {
   const variant = useMemo(() => {
     if (!product) return undefined;
     const vs = product.node.variants.edges.map((e) => e.node);
-    return vs.find((v) => v.selectedOptions.every((o) => (sel[o.name] ?? vs[0].selectedOptions.find((x) => x.name === o.name)?.value) === o.value)) ?? vs[0];
+    return vs.find((v) => v.selectedOptions.every((o) => (sel[o.name] ?? vs[0]?.selectedOptions.find((x) => x.name === o.name)?.value) === o.value)) ?? vs[0];
   }, [product, sel]);
 
   if (isLoading) return <div className="py-40 flex justify-center"><Loader2 className="animate-spin" /></div>;
