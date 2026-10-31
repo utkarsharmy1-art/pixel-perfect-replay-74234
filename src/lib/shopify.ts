@@ -73,7 +73,7 @@ export async function storefrontApiRequest(query: string, variables: Record<stri
   return data;
 }
 
-export async function fetchProducts(opts: { first?: number; query?: string; sortKey?: string; reverse?: boolean } = {}) {
+export async function fetchProducts(opts: { first?: number; query?: string | undefined; sortKey?: string; reverse?: boolean } = {}) {
   const data = await storefrontApiRequest(PRODUCTS_QUERY, {
     first: opts.first ?? 24,
     query: opts.query || null,

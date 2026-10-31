@@ -4,12 +4,12 @@ import { useState } from "react";
 import { fetchProducts } from "@/lib/shopify";
 import { ProductGrid } from "@/components/ProductCard";
 
-type Search = { q?: string; sort?: "best" | "new" | "price-asc" | "price-desc" };
+type Search = { q?: string | undefined; sort?: "best" | "new" | "price-asc" | "price-desc" | undefined };
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    q: typeof s.q === "string" ? s.q : undefined,
-    sort: ["best", "new", "price-asc", "price-desc"].includes(s.sort as string) ? (s.sort as Search["sort"]) : undefined,
+    q: typeof s["q"] === "string" ? s["q"] : undefined,
+    sort: ["best", "new", "price-asc", "price-desc"].includes(s["sort"] as string) ? (s["sort"] as Search["sort"]) : undefined,
   }),
   head: () => ({
     meta: [
@@ -38,7 +38,7 @@ function Shop() {
   const s = SORTS[sort];
   const { data, isLoading } = useQuery({
     queryKey: ["products", q, sort],
-    queryFn: () => fetchProducts({ first: 48, query: q, sortKey: s.sortKey, reverse: s.reverse }),
+    queryFn: () => fetchProducts({ first: 48, query: q, sortKey: s["sort"]Key, reverse: s.reverse }),
   });
 
   return (
