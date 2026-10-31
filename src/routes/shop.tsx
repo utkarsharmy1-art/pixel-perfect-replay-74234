@@ -14,9 +14,9 @@ export const Route = createFileRoute("/shop")({
   head: () => ({
     meta: [
       { title: "Shop — Saffan Collection" },
-      { name: "description", content: "Browse the full Saffan Collection: men's, women's, traditional and western wear." },
+      { name: "description", content: "Browse women's salwar kameez suits: cotton, party wear, Anarkali, palazzo sets and more." },
       { property: "og:title", content: "Shop — Saffan Collection" },
-      { property: "og:description", content: "Browse the full Saffan Collection." },
+      { property: "og:description", content: "Browse women's salwar kameez suits." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -44,10 +44,10 @@ function Shop() {
   return (
     <div className="max-w-7xl mx-auto px-5 py-16">
       <p className="eyebrow text-gold">The collection</p>
-      <h1 className="font-display text-5xl mt-2">{q ? `“${q}”` : "Shop all"}</h1>
+      <h1 className="font-display text-5xl mt-2">{q ? `“${q}”` : "All suits"}</h1>
       <div className="mt-8 mb-12 flex flex-col md:flex-row gap-4 md:items-center justify-between border-y py-4">
         <form onSubmit={(e) => { e.preventDefault(); navigate({ search: (p) => ({ ...p, q: text || undefined }) }); }} className="flex-1 max-w-md">
-          <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Search shirts, kurtas, jeans…" className="w-full bg-transparent border-b border-ink/30 focus:border-gold outline-none py-2 text-sm" aria-label="Search products" />
+          <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Search cotton, Anarkali, party wear…" className="w-full bg-transparent border-b border-ink/30 focus:border-gold outline-none py-2 text-sm" aria-label="Search products" />
         </form>
         <select value={sort} onChange={(e) => navigate({ search: (p) => ({ ...p, sort: e.target.value as Search["sort"] }) })} className="bg-transparent eyebrow outline-none" aria-label="Sort">
           {Object.entries(SORTS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}

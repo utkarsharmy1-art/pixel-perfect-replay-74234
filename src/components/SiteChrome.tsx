@@ -14,7 +14,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <div className="bg-ink text-ivory text-center eyebrow py-2.5">New arrivals · Latest collections · Mira Road</div>
+      <div className="bg-ink text-ivory text-center eyebrow py-2.5">New suits arriving · Cotton · Party wear · Mira Road</div>
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur border-b">
         <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
           <button className="md:hidden p-2" onClick={() => setOpen(!open)} aria-label="Menu">
@@ -51,7 +51,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-5 py-16 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <p className="font-display text-3xl tracking-[0.2em]">SAFFAN COLLECTION</p>
-          <p className="mt-4 text-sm opacity-70 max-w-sm">Premium fashion for men and women, curated in Mira Road, Maharashtra.</p>
+          <p className="mt-4 text-sm opacity-70 max-w-sm">Premium women's salwar kameez suits, curated in Mira Road, Maharashtra.</p>
         </div>
         <div className="text-sm space-y-2 opacity-80">
           <p className="eyebrow text-gold mb-3">Visit</p>

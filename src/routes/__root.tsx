@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header, Footer } from "@/components/SiteChrome";
 import { Toaster } from "@/components/ui/sonner";
 import { useCartSync } from "@/hooks/useCartSync";
+import { StyleAssistant } from "@/components/StyleAssistant";
 
 function NotFoundComponent() {
   return (
@@ -81,8 +82,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Saffan Collection — Premium Fashion, Mira Road" },
-      { name: "description", content: "Premium men's and women's fashion from Saffan Collection, Mira Road." },
+      { title: "Saffan Collection — Women's Salwar Kameez Suits, Mira Road" },
+      { name: "description", content: "Premium women's salwar kameez suits from Saffan Collection, Mira Road." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -127,6 +128,7 @@ function RootComponent() {
       <Header />
       <main><Outlet /></main>
       <Footer />
+      <StyleAssistant />
       <Toaster position="top-center" />
     </QueryClientProvider>
   );
