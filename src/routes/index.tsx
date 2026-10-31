@@ -26,8 +26,9 @@ function Index() {
 
   return (
     <>
-      <section className="relative h-[85vh] min-h-[560px] overflow-hidden bg-ink">
+      <section className="relative h-[min(85vh,720px)] min-h-[520px] overflow-hidden bg-ink">
         <img src={hero} alt="Saffan Collection campaign" width={1920} height={1088} className="absolute inset-0 w-full h-full object-cover object-right" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/70 to-transparent md:via-ivory/30" />
         <div className="relative max-w-7xl mx-auto px-5 h-full flex flex-col justify-center">
           <p className="eyebrow text-ink/70 animate-rise">The New Collection</p>
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.95] mt-4 max-w-xl text-ink animate-rise">Style that<br />defines <em className="text-gold">you</em></h1>
