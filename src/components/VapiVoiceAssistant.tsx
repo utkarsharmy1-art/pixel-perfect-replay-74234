@@ -81,7 +81,11 @@ export function VapiVoiceAssistant() {
       void stop(session);
     };
     try {
-      const { default: VapiSDK } = await import("@vapi-ai/web");
+      const module = await import("@vapi-ai/web");
+      // This SDK ships CommonJS; Vite can expose the constructor under two defaults.
+      const exported: unknown = module.default;
+      const VapiSDK = (typeof exported === "function" ? exported :
+        (exported as { default: typeof Vapi }).default) as typeof Vapi;
       if (!current()) return;
       const sdk = new VapiSDK(publicKey);
       session.sdk = sdk;
