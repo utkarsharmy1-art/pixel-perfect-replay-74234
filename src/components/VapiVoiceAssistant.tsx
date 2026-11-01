@@ -59,8 +59,8 @@ export function VapiVoiceAssistant() {
 
   const start = async () => {
     if (sessionRef.current) return;
-    const publicKey = import.meta.env.VITE_VAPI_PUBLIC_KEY;
-    const assistantId = import.meta.env.VITE_VAPI_ASSISTANT_ID;
+    const publicKey = import.meta.env['VITE_VAPI_PUBLIC_KEY'];
+    const assistantId = import.meta.env['VITE_VAPI_ASSISTANT_ID'];
     if (!publicKey || !assistantId) {
       setError("Voice assistance is not configured yet. Please use the style assistant.");
       setStatus("error"); return;
@@ -98,12 +98,12 @@ export function VapiVoiceAssistant() {
       const onMessage = (message: unknown) => {
         if (!current() || !message || typeof message !== "object") return;
         const m = message as Record<string, unknown>;
-        if (m.type !== "transcript" || typeof m.transcript !== "string" ||
-          (m.role !== "user" && m.role !== "assistant")) return;
-        const line: Transcript = { role: m.role, text: m.transcript };
-        if (m.transcriptType === "final") {
+        if (m['type'] !== "transcript" || typeof m['transcript'] !== "string" ||
+          (m['role'] !== "user" && m['role'] !== "assistant")) return;
+        const line: Transcript = { role: m['role'], text: m['transcript'] };
+        if (m['transcriptType'] === "final") {
           setTranscripts((previous) => [...previous, line]); setPartial(null);
-        } else if (m.transcriptType === "partial") setPartial(line);
+        } else if (m['transcriptType'] === "partial") setPartial(line);
       };
       const onError = () => fail("Unable to connect. Check your microphone permission and internet connection, then try again.");
       sdk.on("call-start", onStart); sdk.on("call-end", onEnd);
