@@ -16,6 +16,7 @@ import { Header, Footer } from "@/components/SiteChrome";
 import { Toaster } from "@/components/ui/sonner";
 import { useCartSync } from "@/hooks/useCartSync";
 import { StyleAssistant } from "@/components/StyleAssistant";
+import { VapiVoiceAssistant } from "@/components/VapiVoiceAssistant";
 
 function NotFoundComponent() {
   return (
@@ -129,6 +130,7 @@ function RootComponent() {
       <main><Outlet /></main>
       <Footer />
       <StyleAssistant />
+      <VapiVoiceAssistant />
       <Toaster position="top-center" />
     </QueryClientProvider>
   );
